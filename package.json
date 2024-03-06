@@ -19,11 +19,13 @@
     "@strapi/plugin-users-permissions": "4.19.1",
     "@strapi/strapi": "4.19.1",
     "better-sqlite3": "8.6.0",
+    "firebase-admin": "^12.0.0",
     "mysql": "^2.18.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "5.3.4",
-    "styled-components": "5.3.3"
+    "styled-components": "5.3.3",
+    "unique-username-generator": "^1.3.0"
   },
   "devDependencies": {},
   "engines": {

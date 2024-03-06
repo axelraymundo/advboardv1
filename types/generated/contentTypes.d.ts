@@ -766,6 +766,8 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     user_type: Attribute.Enumeration<['user', 'dm']> &
       Attribute.Required &
       Attribute.DefaultTo<'user'>;
+    signin_provider: Attribute.String;
+    full_name: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

@@ -23,5 +23,27 @@ module.exports = {
       credential: admin.credential.cert(serviceAccount),
     });
     strapi.firebase = admin;
+
+    //create function, move this to firebase service later
+    strapi.validateFCMToken = async (token) => {
+      console.log(token, JSON.stringify(token) === "{}");
+
+      if (token === undefined || JSON.stringify(token) === "{}") return false;
+
+      return new Promise((resolve, reject) => {
+        strapi.firebase
+          .messaging()
+          .send({ token })
+          .then((response) => {
+            // Response is a message ID string.
+            console.log("Successfully sent message:", response);
+            resolve(true);
+          })
+          .catch((error) => {
+            console.log("Error sending message:", error);
+            resolve(false);
+          });
+      });
+    };
   },
 };

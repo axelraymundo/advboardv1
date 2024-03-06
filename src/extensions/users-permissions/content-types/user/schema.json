@@ -73,6 +73,12 @@
       ],
       "default": "user",
       "required": true
+    },
+    "signin_provider": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
     }
   }
 }
