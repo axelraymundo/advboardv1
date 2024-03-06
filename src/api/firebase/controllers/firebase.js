@@ -6,6 +6,7 @@
 
 const utils = require("@strapi/utils");
 const { sanitize } = utils;
+
 const sanitizeOutput = (user, ctx) => {
   const schema = strapi.getModel("plugin::users-permissions.user");
   const { auth } = ctx.state;
@@ -37,11 +38,15 @@ module.exports = {
             },
           });
         if (user) {
+          //remove username
+          const userData = await sanitizeOutput(user, ctx);
+          delete userData.username;
+
           ctx.send({
             jwt: getService("jwt").issue({
               id: user.id,
             }),
-            user: await sanitizeOutput(user, ctx),
+            user: userData,
           });
         } else {
           const pluginStore = await strapi.store({
@@ -61,8 +66,9 @@ module.exports = {
           data.role = role.id;
           data.email = decodedToken.email;
           data.full_name = decodedToken.name;
-          //   data.username = genUsername.generateFromEmail(decodedToken.email, 4);
-          data.username = `${decodedToken.firebase.sign_in_provider}_${decodedToken.email}`;
+          data.username = genUsername.generateUsername("-", 4);
+          data.nickname = data.username;
+          //   data.username = `${decodedToken.firebase.sign_in_provider}_${decodedToken.email}`;
           data.confirmed = true;
           data.signin_provider = decodedToken.firebase.sign_in_provider;
 
@@ -77,6 +83,8 @@ module.exports = {
             jwt = getService("jwt").issue({
               id: user.id,
             });
+
+            delete user.username;
 
             ctx.body = {
               user,
