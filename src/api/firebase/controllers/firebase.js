@@ -98,6 +98,7 @@ module.exports = {
       return ctx.badRequest(null, [{ messages: [{ id: "unauthorized" }] }]);
     }
   },
+
   async pushNotification(ctx) {
     const registrationTokens = [...ctx.request.body.tokens];
 
@@ -109,6 +110,7 @@ module.exports = {
 
     return await strapi.pushNotification(message);
   },
+
   async saveFCMToken(ctx) {
     const token = ctx.request.body.token;
 
@@ -144,6 +146,7 @@ module.exports = {
 
     return { message: "Token is saved under user" };
   },
+
   async deleteFCMToken(ctx) {
     const { id } = ctx.params;
 
