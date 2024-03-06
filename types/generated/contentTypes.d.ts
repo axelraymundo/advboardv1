@@ -768,6 +768,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       Attribute.DefaultTo<'user'>;
     signin_provider: Attribute.String;
     full_name: Attribute.String;
+    nickname: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
