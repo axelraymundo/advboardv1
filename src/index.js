@@ -45,5 +45,47 @@ module.exports = {
           });
       });
     };
+
+    strapi.pushNotification = async (message) => {
+      const msg = { ...message };
+
+      msg.notification = {
+        body: message.data.body,
+        title: message.data.title,
+      };
+      msg.android = { priority: "high" };
+      msg.priority = 10;
+
+      const tokens = msg.tokens;
+
+      return new Promise((resolve, reject) => {
+        strapi.firebase
+          .messaging()
+          .sendMulticast(msg)
+          .then(async function (response) {
+            // console.log("success?", JSON.stringify(response));
+
+            let results = response.responses;
+            for (let i = 0; i < results.length; i++) {
+              const result = results[i];
+              if (!result.success) {
+                // console.log("DELETE ", i, tokens[i]);
+
+                const toDelete = await strapi.db
+                  .query("api::device-token.device-token")
+                  .delete({
+                    where: { token: tokens[i] },
+                  });
+              }
+            }
+
+            resolve(response);
+          })
+          .catch(function (error) {
+            console.log("error", error);
+            reject(error);
+          });
+      });
+    };
   },
 };
