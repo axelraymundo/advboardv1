@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "games",
+  "info": {
+    "singularName": "game",
+    "pluralName": "games",
+    "displayName": "Games",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "schedule": {
+      "type": "datetime"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "tier_1",
+        "tier_2",
+        "tier_3",
+        "tier_4",
+        "homebrew",
+        "hardcover",
+        "boardgame"
+      ]
+    },
+    "dungeon_master": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "players_pending": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "plugin::users-permissions.user"
+    },
+    "players": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "notes": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "scheduled",
+        "done",
+        "cancelled"
+      ]
+    },
+    "players_only_notes": {
+      "type": "text"
+    },
+    "show_player_notes": {
+      "type": "boolean",
+      "default": false
+    },
+    "player_logs": {
+      "type": "json"
+    },
+    "game_logs": {
+      "type": "json"
+    }
+  }
+}
