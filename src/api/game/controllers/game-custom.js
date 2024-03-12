@@ -121,12 +121,16 @@ module.exports = {
     //check if game exists
     const game = await strapi.entityService.findOne("api::game.game", game_id, {
       populate: {
+        dungeon_master: true,
         players_pending: true,
         players: true,
       },
     });
 
     if (!game) return ctx.badRequest("Invalid game id");
+
+    if (game.dungeon_master && game.dungeon_master.id === user.id)
+      return ctx.badRequest("You cannot join your own game!");
 
     //check if player is already on the wait list
     if (
@@ -578,6 +582,51 @@ module.exports = {
         total: count,
       },
     };
+  },
+
+  async getGameDM(ctx) {
+    const user = ctx.state.user;
+    const { game_id } = ctx.params;
+
+    const entry = await strapi.db.query("api::game.game").findOne({
+      where: {
+        $and: [
+          {
+            id: game_id,
+          },
+          {
+            dungeon_master: {
+              id: user.id,
+            },
+          },
+        ],
+      },
+      select: [
+        "id",
+        "title",
+        "schedule",
+        "type",
+        "notes",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "player_logs",
+        "game_logs",
+      ],
+      populate: {
+        dungeon_master: {
+          select: ["id", "full_name", "nickname", "dm_name"],
+        },
+        players_pending: {
+          select: ["id", "full_name", "nickname"],
+        },
+        players: {
+          select: ["id", "full_name", "nickname"],
+        },
+      },
+    });
+
+    return entry;
   },
 
   async createGame(ctx) {

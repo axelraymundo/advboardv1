@@ -46,6 +46,11 @@ module.exports = {
       handler: "game-custom.getGamesDM",
     },
     {
+      method: "GET",
+      path: "/games/get-game-dm/:game_id",
+      handler: "game-custom.getGameDM",
+    },
+    {
       method: "POST",
       path: "/games/create-game",
       handler: "game-custom.createGame",
