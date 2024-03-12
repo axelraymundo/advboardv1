@@ -62,7 +62,7 @@ module.exports = {
       ],
       populate: {
         dungeon_master: {
-          fields: ["id", "dm_name"],
+          fields: ["id", "full_name", "nickname", "dm_name"],
         },
         players: {
           fields: ["id", "full_name", "nickname"],
@@ -77,7 +77,30 @@ module.exports = {
   async getGame(ctx) {
     const { game_id } = ctx.params;
 
-    return "game " + game_id;
+    const game = await strapi.entityService.findOne("api::game.game", game_id, {
+      fields: [
+        "id",
+        "title",
+        "schedule",
+        "location",
+        "type",
+        "notes",
+        "status",
+        "createdAt",
+        "updatedAt",
+      ],
+      populate: {
+        dungeon_master: {
+          fields: ["id", "full_name", "nickname", "dm_name"],
+        },
+        players: {
+          fields: ["id", "full_name", "nickname"],
+        },
+        other_players: true,
+      },
+    });
+
+    return game;
   },
 
   async signUpGame(ctx) {
@@ -231,7 +254,7 @@ module.exports = {
     if (!game) return ctx.badRequest("Invalid game id");
     if (!player) return ctx.badRequest("Invalid player id");
 
-    if (game.dungeon_master.id !== user.id)
+    if (!game.dungeon_master || game.dungeon_master.id !== user.id)
       return ctx.badRequest("You are not the DM of this game");
 
     let notPending = false;
@@ -284,7 +307,68 @@ module.exports = {
       },
     });
 
-    return entry;
+    if (entry) {
+      return { success: true };
+    }
+  },
+
+  async addPlayer(ctx) {
+    const user = ctx.state.user;
+    const { game_id, player_id } = ctx.params;
+
+    //check if game exists
+    const game = await strapi.entityService.findOne("api::game.game", game_id, {
+      populate: {
+        dungeon_master: true,
+        players_pending: true,
+        players: true,
+      },
+    });
+
+    //check if player exists
+    const player = await strapi.entityService.findOne(
+      "plugin::users-permissions.user",
+      player_id,
+      {}
+    );
+
+    if (!game) return ctx.badRequest("Invalid game id");
+    if (!player) return ctx.badRequest("Invalid player id");
+
+    if (!game.dungeon_master || game.dungeon_master.id !== user.id)
+      return ctx.badRequest("You are not the DM of this game");
+
+    //check if player is already on the player list
+    if (game.players) {
+      const players = game.players.map((p) => p.id);
+      const index = players.indexOf(player.id);
+      if (index >= 0) {
+        return ctx.badRequest("You have already accepted this player");
+      }
+    } else {
+      game.players = [];
+    }
+
+    game.players.push(player.id);
+
+    if (!game.player_logs) game.player_logs = [];
+    game.player_logs.push({
+      message: `Player ${player.full_name} (${player.nickname}) has been added to this game`,
+      user_id: player.id,
+      log_date: new Date().toISOString(),
+    });
+
+    //update game details
+    const entry = await strapi.entityService.update("api::game.game", game_id, {
+      data: {
+        players: game.players,
+        player_logs: game.player_logs,
+      },
+      populate: {
+        players_pending: true,
+        players: true,
+      },
+    });
 
     if (entry) {
       return { success: true };
@@ -314,7 +398,7 @@ module.exports = {
     if (!game) return ctx.badRequest("Invalid game id");
     if (!player) return ctx.badRequest("Invalid player id");
 
-    if (game.dungeon_master.id !== user.id)
+    if (!game.dungeon_master || game.dungeon_master.id !== user.id)
       return ctx.badRequest("You are not the DM of this game");
 
     let notPending = false;
@@ -354,8 +438,6 @@ module.exports = {
         players: true,
       },
     });
-
-    return entry;
 
     if (entry) {
       return { success: true };
@@ -409,7 +491,7 @@ module.exports = {
         orderBy: { schedule: "desc" },
         populate: {
           dungeon_master: {
-            select: ["id", "dm_name"],
+            select: ["id", "full_name", "nickname", "dm_name"],
           },
           players: {
             select: ["id", "full_name", "nickname"],
@@ -465,7 +547,7 @@ module.exports = {
         orderBy: { schedule: "desc" },
         populate: {
           dungeon_master: {
-            select: ["id", "dm_name"],
+            select: ["id", "full_name", "nickname", "dm_name"],
           },
           players_pending: {
             select: ["id", "full_name", "nickname"],
@@ -525,6 +607,55 @@ module.exports = {
     const user = ctx.state.user;
     const { game_id } = ctx.params;
 
-    return "update";
+    if (user.user_type !== "dm")
+      return ctx.badRequest("Only DMs can update games");
+
+    const game = await strapi.entityService.findOne("api::game.game", game_id, {
+      populate: {
+        dungeon_master: true,
+        players: true,
+      },
+    });
+
+    if (!game.dungeon_master || game.dungeon_master.id !== user.id)
+      return ctx.badRequest("You are not the DM of this game");
+
+    let data = ctx.request.body;
+
+    if (data.title === "") ctx.badRequest("title cannot be blank");
+
+    //allowed data
+    Object.entries(data).forEach(([key, value]) => {
+      if (
+        ![
+          "title",
+          "schedule",
+          "location",
+          "type",
+          "notes",
+          "status",
+          "players",
+          "other_players",
+        ].includes(key)
+      )
+        delete data[key];
+    });
+
+    console.log(data);
+
+    const entry = await strapi.entityService.update("api::game.game", game_id, {
+      data,
+      populate: {
+        dungeon_master: {
+          fields: ["id", "full_name", "nickname", "dm_name"],
+        },
+        players: {
+          fields: ["id", "full_name", "nickname", "dm_name"],
+        },
+        other_players: true,
+      },
+    });
+
+    return entry;
   },
 };

@@ -27,6 +27,11 @@ module.exports = {
     },
     {
       method: "GET",
+      path: "/games/add/:game_id/:player_id",
+      handler: "game-custom.addPlayer",
+    },
+    {
+      method: "GET",
       path: "/games/remove/:game_id/:player_id",
       handler: "game-custom.removePlayer",
     },
@@ -47,7 +52,7 @@ module.exports = {
     },
     {
       method: "PUT",
-      path: "/games/update-game",
+      path: "/games/update-game/:game_id",
       handler: "game-custom.updateGame",
     },
   ],
