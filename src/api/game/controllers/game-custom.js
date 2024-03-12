@@ -55,6 +55,7 @@ module.exports = {
         "schedule",
         "type",
         "notes",
+        "status",
         "createdAt",
         "updatedAt",
       ],
@@ -352,5 +353,132 @@ module.exports = {
     if (entry) {
       return { success: true };
     }
+  },
+
+  async getGames(ctx) {
+    const user = ctx.state.user;
+    const { status, search, sort, page, pageSize } = ctx.query;
+
+    if (!status) {
+      return ctx.badRequest("Please indicate status if pending or active ");
+    }
+
+    let where = {};
+    if (status === "pending") {
+      where["players_pending"] = {
+        id: {
+          $in: [user.id],
+        },
+      };
+    } else if (status === "active") {
+      where["players"] = {
+        id: {
+          $in: [user.id],
+        },
+      };
+    }
+    if (search) {
+      where["title"] = {
+        $contains: search,
+      };
+    }
+
+    let offset = parseInt(page) === 1 ? 0 : parseInt(page) * parseInt(pageSize);
+
+    const [entries, count] = await strapi.db
+      .query("api::game.game")
+      .findWithCount({
+        where,
+        select: [
+          "id",
+          "title",
+          "schedule",
+          "type",
+          "notes",
+          "status",
+          "createdAt",
+          "updatedAt",
+        ],
+        orderBy: { schedule: "desc" },
+        populate: {
+          dungeon_master: {
+            select: ["id", "dm_name"],
+          },
+          players: {
+            select: ["id", "full_name", "nickname"],
+          },
+        },
+        offset,
+        limit: pageSize,
+      });
+
+    return {
+      results: entries,
+      pagination: {
+        page: parseInt(page),
+        pageSize: parseInt(pageSize),
+        pageCount: Math.ceil(count / parseInt(pageSize)),
+        total: count,
+      },
+    };
+  },
+
+  async getGamesDM(ctx) {
+    const user = ctx.state.user;
+    const { search, sort, page, pageSize } = ctx.query;
+
+    let where = {};
+    where["dungeon_master"] = {
+      id: user.id,
+    };
+    if (search) {
+      where["title"] = {
+        $contains: search,
+      };
+    }
+
+    let offset = parseInt(page) === 1 ? 0 : parseInt(page) * parseInt(pageSize);
+
+    const [entries, count] = await strapi.db
+      .query("api::game.game")
+      .findWithCount({
+        where,
+        select: [
+          "id",
+          "title",
+          "schedule",
+          "type",
+          "notes",
+          "status",
+          "createdAt",
+          "updatedAt",
+          "player_logs",
+          "game_logs",
+        ],
+        orderBy: { schedule: "desc" },
+        populate: {
+          dungeon_master: {
+            select: ["id", "dm_name"],
+          },
+          players_pending: {
+            select: ["id", "full_name", "nickname"],
+          },
+          players: {
+            select: ["id", "full_name", "nickname"],
+          },
+        },
+        offset,
+        limit: pageSize,
+      });
+
+    return {
+      results: entries,
+      pagination: {
+        page: parseInt(page),
+        pageSize: parseInt(pageSize),
+        pageCount: Math.ceil(count / parseInt(pageSize)),
+        total: count,
+      },
+    };
   },
 };

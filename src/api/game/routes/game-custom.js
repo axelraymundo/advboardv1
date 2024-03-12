@@ -25,5 +25,15 @@ module.exports = {
       path: "/games/remove/:game_id/:player_id",
       handler: "game-custom.removePlayer",
     },
+    {
+      method: "GET",
+      path: "/games/get-games",
+      handler: "game-custom.getGames",
+    },
+    {
+      method: "GET",
+      path: "/games/get-games-dm",
+      handler: "game-custom.getGamesDM",
+    },
   ],
 };

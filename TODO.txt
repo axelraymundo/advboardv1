@@ -1,15 +1,15 @@
 player
 
-signup to game
+signup to game done
 get games (pending and active games)
-pending
-active
-leave active game
+pending done
+active done
+leave active game done
 
 dm
 create game
-get games dm 
-accept player (from waitlist)
-remove player (from player list)
+get games dm done
+accept player (from waitlist) done
+remove player (from player list) done
 
 
