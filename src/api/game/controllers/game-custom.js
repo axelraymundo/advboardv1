@@ -6,23 +6,34 @@
 
 module.exports = {
   async getBoard(ctx) {
-    const { search, sort, page, pageSize } = ctx.query;
+    const { search, sort, from, to, page, pageSize } = ctx.query;
 
     let filters = {};
 
     if (search) {
-      filters = {
-        $or: [
-          {
-            title: {
-              $containsi: search,
-            },
+      filters["$or"] = [
+        {
+          title: {
+            $containsi: search,
           },
-        ],
-      };
+        },
+      ];
     }
 
-    let sortObject = { id: "desc" };
+    filters["$and"] = [
+      {
+        schedule: {
+          $gte: from,
+        },
+      },
+      {
+        schedule: {
+          $lte: to,
+        },
+      },
+    ];
+
+    let sortObject = { id: "asc" };
     if (sort) {
       if (!(sort === "desc" || sort === "asc")) {
         return ctx.badRequest("sort must be asc or desc");
@@ -32,6 +43,7 @@ module.exports = {
 
     const entries = await strapi.entityService.findPage("api::game.game", {
       filters,
+      page,
       pageSize,
       sort: sortObject,
       fields: [
