@@ -9,7 +9,9 @@ module.exports = {
     const entry = await strapi.entityService.findOne(
       "plugin::users-permissions.user",
       ctx.state.user.id,
-      {}
+      {
+        fields: ["id", "full_name", "nickname", "dm_name"],
+      }
     );
     return entry;
   },
@@ -17,7 +19,12 @@ module.exports = {
     const entry = await strapi.entityService.update(
       "plugin::users-permissions.user",
       ctx.state.user.id,
-      { data: {} }
+      {
+        fields: ["id", "full_name", "nickname", "dm_name"],
+        data: ctx.request.body,
+      }
     );
+
+    return entry;
   },
 };
