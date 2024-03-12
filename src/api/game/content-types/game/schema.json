@@ -42,7 +42,7 @@
     },
     "players": {
       "type": "relation",
-      "relation": "oneToOne",
+      "relation": "oneToMany",
       "target": "plugin::users-permissions.user"
     },
     "notes": {
@@ -50,7 +50,11 @@
     },
     "status": {
       "type": "enumeration",
-      "enum": ["scheduled", "done", "cancelled"]
+      "enum": [
+        "scheduled",
+        "done",
+        "cancelled"
+      ]
     },
     "players_only_notes": {
       "type": "text"

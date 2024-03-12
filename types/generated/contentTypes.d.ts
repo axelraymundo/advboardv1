@@ -399,7 +399,7 @@ export interface ApiGameGame extends Schema.CollectionType {
     >;
     players: Attribute.Relation<
       'api::game.game',
-      'oneToOne',
+      'oneToMany',
       'plugin::users-permissions.user'
     >;
     notes: Attribute.Text;
