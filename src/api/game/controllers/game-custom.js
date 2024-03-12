@@ -8,7 +8,11 @@ module.exports = {
   async getBoard(ctx) {
     const { search, sort, from, to, page, pageSize } = ctx.query;
 
-    let filters = {};
+    let filters = {
+      status: {
+        $notNull: true,
+      },
+    };
 
     //sample to and from
     // new Date("2022-03-24 05:00").toISOString();
@@ -17,6 +21,11 @@ module.exports = {
       filters["$or"] = [
         {
           title: {
+            $containsi: search,
+          },
+        },
+        {
+          type: {
             $containsi: search,
           },
         },
