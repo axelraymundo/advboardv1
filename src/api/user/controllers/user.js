@@ -34,4 +34,26 @@ module.exports = {
 
     return entry;
   },
+
+  async getUsers(ctx) {
+    const { page, pageSize } = ctx.query;
+
+    const entries = await strapi.entityService.findPage(
+      "plugin::users-permissions.user",
+      {
+        fields: [
+          "id",
+          "full_name",
+          "nickname",
+          "dm_name",
+          "user_type",
+          "createdAt",
+        ],
+        page,
+        pageSize,
+      }
+    );
+
+    return entries;
+  },
 };

@@ -10,5 +10,10 @@ module.exports = {
       path: "/users/update-me",
       handler: "user.updateMe",
     },
+    {
+      method: "GET",
+      path: "/users/get-users",
+      handler: "user.getUsers",
+    },
   ],
 };
