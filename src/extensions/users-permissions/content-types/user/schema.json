@@ -67,10 +67,7 @@
     },
     "user_type": {
       "type": "enumeration",
-      "enum": [
-        "user",
-        "dm"
-      ],
+      "enum": ["user", "dm"],
       "default": "user",
       "required": true
     },
@@ -84,6 +81,9 @@
       "type": "string"
     },
     "dm_name": {
+      "type": "string"
+    },
+    "original_name": {
       "type": "string"
     },
     "last_online": {

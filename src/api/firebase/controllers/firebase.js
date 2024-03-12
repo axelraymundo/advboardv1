@@ -65,6 +65,7 @@ module.exports = {
           const data = {};
           data.role = role.id;
           data.email = decodedToken.email;
+          data.original_name = decodedToken.name;
           data.full_name = decodedToken.name;
           data.username = genUsername.generateUsername("-", 4);
           data.nickname = data.username;

@@ -859,6 +859,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     full_name: Attribute.String;
     nickname: Attribute.String;
     dm_name: Attribute.String;
+    original_name: Attribute.String;
     last_online: Attribute.DateTime;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
