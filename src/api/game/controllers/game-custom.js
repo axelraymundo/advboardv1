@@ -10,6 +10,9 @@ module.exports = {
 
     let filters = {};
 
+    //sample to and from
+    // new Date("2022-03-24 05:00").toISOString();
+
     if (search) {
       filters["$or"] = [
         {

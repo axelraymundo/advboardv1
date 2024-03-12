@@ -1,0 +1,15 @@
+player
+
+signup to game
+get games (pending and active games)
+pending
+active
+leave active game
+
+dm
+create game
+get games dm 
+accept player (from waitlist)
+remove player (from player list)
+
+
