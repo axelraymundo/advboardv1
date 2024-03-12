@@ -1,6 +1,7 @@
 "use strict";
 
 const socketIOListeners = require("./socketIOListeners");
+const defaultLocations = require("./defaultLocations");
 
 module.exports = {
   /**
@@ -91,5 +92,6 @@ module.exports = {
     };
 
     await socketIOListeners(strapi);
+    await defaultLocations(strapi);
   },
 };
