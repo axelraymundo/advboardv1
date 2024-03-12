@@ -68,6 +68,7 @@ module.exports = {
           data.full_name = decodedToken.name;
           data.username = genUsername.generateUsername("-", 4);
           data.nickname = data.full_name;
+          data.dm_name = data.full_name;
           //   data.username = `${decodedToken.firebase.sign_in_provider}_${decodedToken.email}`;
           data.confirmed = true;
           data.signin_provider = decodedToken.firebase.sign_in_provider;
