@@ -50,11 +50,7 @@
     },
     "status": {
       "type": "enumeration",
-      "enum": [
-        "scheduled",
-        "done",
-        "cancelled"
-      ]
+      "enum": ["scheduled", "done", "cancelled"]
     },
     "players_only_notes": {
       "type": "text"
@@ -62,6 +58,12 @@
     "show_player_notes": {
       "type": "boolean",
       "default": false
+    },
+    "other_players": {
+      "displayName": "extra_players",
+      "type": "component",
+      "repeatable": true,
+      "component": "other.extra-players"
     },
     "player_logs": {
       "type": "json"

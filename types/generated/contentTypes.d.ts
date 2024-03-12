@@ -406,6 +406,7 @@ export interface ApiGameGame extends Schema.CollectionType {
     status: Attribute.Enumeration<['scheduled', 'done', 'cancelled']>;
     players_only_notes: Attribute.Text;
     show_player_notes: Attribute.Boolean & Attribute.DefaultTo<false>;
+    other_players: Attribute.Component<'other.extra-players', true>;
     player_logs: Attribute.JSON;
     game_logs: Attribute.JSON;
     createdAt: Attribute.DateTime;

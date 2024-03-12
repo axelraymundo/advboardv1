@@ -1,0 +1,13 @@
+{
+  "collectionName": "components_other_extra_players",
+  "info": {
+    "displayName": "extra_players",
+    "icon": "user"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    }
+  }
+}
