@@ -85,6 +85,9 @@
     },
     "dm_name": {
       "type": "string"
+    },
+    "last_online": {
+      "type": "datetime"
     }
   }
 }
