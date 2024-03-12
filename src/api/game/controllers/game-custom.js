@@ -568,6 +568,7 @@ module.exports = {
           players: {
             select: ["id", "full_name", "nickname"],
           },
+          other_players: true,
         },
         offset,
         limit: pageSize,
@@ -623,6 +624,7 @@ module.exports = {
         players: {
           select: ["id", "full_name", "nickname"],
         },
+        other_players: true,
       },
     });
 
