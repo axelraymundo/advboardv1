@@ -53,6 +53,7 @@ module.exports = {
         "id",
         "title",
         "schedule",
+        "location",
         "type",
         "notes",
         "status",
@@ -71,6 +72,12 @@ module.exports = {
     });
 
     return entries;
+  },
+
+  async getGame(ctx) {
+    const { game_id } = ctx.params;
+
+    return "game " + game_id;
   },
 
   async signUpGame(ctx) {
@@ -480,5 +487,44 @@ module.exports = {
         total: count,
       },
     };
+  },
+
+  async createGame(ctx) {
+    const user = ctx.state.user;
+
+    if (user.user_type !== "dm")
+      return ctx.badRequest("Only DMs can create games");
+
+    let data = ctx.request.body;
+
+    if (data.title === "") ctx.badRequest("title cannot be blank");
+
+    //allowed data
+    Object.entries(data).forEach(([key, value]) => {
+      if (!["title", "schedule", "location", "type", "notes"].includes(key))
+        delete data[key];
+    });
+
+    data.dungeon_master = user.id;
+    data.player_logs = [];
+    data.game_logs = [];
+
+    const entry = await strapi.entityService.create("api::game.game", {
+      data,
+      populate: {
+        dungeon_master: {
+          fields: ["id", "full_name", "nickname", "dm_name"],
+        },
+      },
+    });
+
+    return entry;
+  },
+
+  async updateGame(ctx) {
+    const user = ctx.state.user;
+    const { game_id } = ctx.params;
+
+    return "update";
   },
 };

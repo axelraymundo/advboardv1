@@ -7,6 +7,11 @@ module.exports = {
     },
     {
       method: "GET",
+      path: "/games/get-game/:game_id",
+      handler: "game-custom.getGame",
+    },
+    {
+      method: "GET",
       path: "/games/signup/:game_id",
       handler: "game-custom.signUpGame",
     },
@@ -34,6 +39,16 @@ module.exports = {
       method: "GET",
       path: "/games/get-games-dm",
       handler: "game-custom.getGamesDM",
+    },
+    {
+      method: "POST",
+      path: "/games/create-game",
+      handler: "game-custom.createGame",
+    },
+    {
+      method: "PUT",
+      path: "/games/update-game",
+      handler: "game-custom.updateGame",
     },
   ],
 };

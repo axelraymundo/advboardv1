@@ -13,10 +13,14 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "required": false
     },
     "schedule": {
       "type": "datetime"
+    },
+    "location": {
+      "type": "string"
     },
     "type": {
       "type": "enumeration",

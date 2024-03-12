@@ -376,6 +376,7 @@ export interface ApiGameGame extends Schema.CollectionType {
   attributes: {
     title: Attribute.String;
     schedule: Attribute.DateTime;
+    location: Attribute.String;
     type: Attribute.Enumeration<
       [
         'tier_1',

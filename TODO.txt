@@ -8,6 +8,7 @@ leave active game done
 
 dm
 create game
+update game
 get games dm done
 accept player (from waitlist) done
 remove player (from player list) done
