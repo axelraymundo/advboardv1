@@ -15,5 +15,15 @@ module.exports = {
       path: "/games/leave/:game_id",
       handler: "game-custom.leaveGame",
     },
+    {
+      method: "GET",
+      path: "/games/accept/:game_id/:player_id",
+      handler: "game-custom.acceptPlayer",
+    },
+    {
+      method: "GET",
+      path: "/games/remove/:game_id/:player_id",
+      handler: "game-custom.removePlayer",
+    },
   ],
 };

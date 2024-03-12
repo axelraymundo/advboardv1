@@ -86,7 +86,7 @@ module.exports = {
       },
     });
 
-    if (!game) ctx.badRequest("Invalid game id");
+    if (!game) return ctx.badRequest("Invalid game id");
 
     //check if player is already on the wait list
     if (
@@ -107,9 +107,8 @@ module.exports = {
 
     //update player logs
     if (!game.player_logs) game.player_logs = [];
-
     game.player_logs.push({
-      message: `Player ${user.full_name} (${user.nickname}) wants to join your game`,
+      message: `Player ${user.full_name} (${user.nickname}) wants to join this game`,
       user_id: user.id,
       log_date: new Date().toISOString(),
     });
@@ -145,7 +144,7 @@ module.exports = {
       },
     });
 
-    if (!game) ctx.badRequest("Invalid game id");
+    if (!game) return ctx.badRequest("Invalid game id");
 
     let notPending = false;
     let notPlayer = false;
@@ -163,7 +162,7 @@ module.exports = {
 
     //check if player is already on the player list
     if (game.players) {
-      const players = game.players_pending.map((p) => p.id);
+      const players = game.players.map((p) => p.id);
       const index = players.indexOf(user.id);
       if (index >= 0) {
         game.players.splice(index, 1);
@@ -176,8 +175,9 @@ module.exports = {
       return ctx.badRequest("You have not signed up or joined this game");
     }
 
+    if (!game.player_logs) game.player_logs = [];
     game.player_logs.push({
-      message: `Player ${user.full_name} (${user.nickname}) has withdrawn from your game`,
+      message: `Player ${user.full_name} (${user.nickname}) has withdrawn from this game`,
       user_id: user.id,
       log_date: new Date().toISOString(),
     });
@@ -194,6 +194,160 @@ module.exports = {
         players: true,
       },
     });
+
+    if (entry) {
+      return { success: true };
+    }
+  },
+
+  async acceptPlayer(ctx) {
+    const user = ctx.state.user;
+    const { game_id, player_id } = ctx.params;
+
+    //check if game exists
+    const game = await strapi.entityService.findOne("api::game.game", game_id, {
+      populate: {
+        dungeon_master: true,
+        players_pending: true,
+        players: true,
+      },
+    });
+
+    //check if player exists
+    const player = await strapi.entityService.findOne(
+      "plugin::users-permissions.user",
+      player_id,
+      {}
+    );
+
+    if (!game) return ctx.badRequest("Invalid game id");
+    if (!player) return ctx.badRequest("Invalid player id");
+
+    if (game.dungeon_master.id !== user.id)
+      return ctx.badRequest("You are not the DM of this game");
+
+    let notPending = false;
+    let notPlayer = false;
+
+    //check if player is already on the player list
+    if (game.players) {
+      const players = game.players.map((p) => p.id);
+      const index = players.indexOf(player.id);
+      if (index >= 0) {
+        return ctx.badRequest("You have already accepted this player");
+      }
+    } else {
+      game.players = [];
+    }
+
+    //check if player is already on the wait list
+    if (game.players_pending) {
+      const players_pending = game.players_pending.map((p) => p.id);
+      const index = players_pending.indexOf(player.id);
+      if (index >= 0) {
+        game.players_pending.splice(index, 1);
+        game.players.push(player_id);
+      } else {
+        notPending = true;
+      }
+    }
+
+    if (notPending) {
+      return ctx.badRequest("This player has not signed up to this game");
+    }
+
+    if (!game.player_logs) game.player_logs = [];
+    game.player_logs.push({
+      message: `Player ${player.full_name} (${player.nickname}) has been accepted to this game`,
+      user_id: player.id,
+      log_date: new Date().toISOString(),
+    });
+
+    //update game details
+    const entry = await strapi.entityService.update("api::game.game", game_id, {
+      data: {
+        players_pending: game.players_pending,
+        players: game.players,
+        player_logs: game.player_logs,
+      },
+      populate: {
+        players_pending: true,
+        players: true,
+      },
+    });
+
+    return entry;
+
+    if (entry) {
+      return { success: true };
+    }
+  },
+
+  async removePlayer(ctx) {
+    const user = ctx.state.user;
+    const { game_id, player_id } = ctx.params;
+
+    //check if game exists
+    const game = await strapi.entityService.findOne("api::game.game", game_id, {
+      populate: {
+        dungeon_master: true,
+        players_pending: true,
+        players: true,
+      },
+    });
+
+    //check if player exists
+    const player = await strapi.entityService.findOne(
+      "plugin::users-permissions.user",
+      player_id,
+      {}
+    );
+
+    if (!game) return ctx.badRequest("Invalid game id");
+    if (!player) return ctx.badRequest("Invalid player id");
+
+    if (game.dungeon_master.id !== user.id)
+      return ctx.badRequest("You are not the DM of this game");
+
+    let notPending = false;
+    let notPlayer = false;
+
+    //check if player is already on the player list
+    if (game.players) {
+      const players = game.players.map((p) => p.id);
+      const index = players.indexOf(player.id);
+      if (index >= 0) {
+        game.players.splice(index, 1);
+      } else {
+        notPlayer = true;
+      }
+    }
+
+    if (notPlayer) {
+      return ctx.badRequest("This player is not in this game");
+    }
+
+    if (!game.player_logs) game.player_logs = [];
+    game.player_logs.push({
+      message: `Player ${player.full_name} (${player.nickname}) has been removed from this game`,
+      user_id: player.id,
+      log_date: new Date().toISOString(),
+    });
+
+    //update game details
+    const entry = await strapi.entityService.update("api::game.game", game_id, {
+      data: {
+        players_pending: game.players_pending,
+        players: game.players,
+        player_logs: game.player_logs,
+      },
+      populate: {
+        players_pending: true,
+        players: true,
+      },
+    });
+
+    return entry;
 
     if (entry) {
       return { success: true };
