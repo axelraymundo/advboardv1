@@ -351,6 +351,9 @@ module.exports = {
     if (!game.dungeon_master || game.dungeon_master.id !== user.id)
       return ctx.badRequest("You are not the DM of this game");
 
+    if (game.dungeon_master && game.dungeon_master.id === player.id)
+      return ctx.badRequest("You cannot join your own game!");
+
     //check if player is already on the player list
     if (game.players) {
       const players = game.players.map((p) => p.id);
