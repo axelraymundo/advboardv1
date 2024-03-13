@@ -73,6 +73,9 @@ module.exports = {
         dungeon_master: {
           fields: ["id", "full_name", "nickname", "dm_name"],
         },
+        players_pending: {
+          fields: ["id"],
+        },
         players: {
           fields: ["id", "full_name", "nickname"],
         },
@@ -80,7 +83,17 @@ module.exports = {
       },
     });
 
-    return entries;
+    let results = entries.results;
+    let pagination = entries.pagination;
+
+    results = results.map((e) => {
+      e.players_pending = e.players_pending.map((p) => {
+        return { id: btoa(p.id) };
+      });
+      return e;
+    });
+
+    return { results, pagination };
   },
 
   async getGame(ctx) {
@@ -504,6 +517,7 @@ module.exports = {
           "status",
           "createdAt",
           "updatedAt",
+          "player_logs",
         ],
         orderBy: { schedule: "desc" },
         populate: {
@@ -519,8 +533,13 @@ module.exports = {
         limit: pageSize,
       });
 
+    const final = entries.map((e) => {
+      e.player_logs = e.player_logs.filter((pl) => pl.user_id === user.id);
+      return e;
+    });
+
     return {
-      results: entries,
+      results: final,
       pagination: {
         page: parseInt(page),
         pageSize: parseInt(pageSize),
