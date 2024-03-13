@@ -498,6 +498,7 @@ module.exports = {
           "id",
           "title",
           "schedule",
+          "location",
           "type",
           "notes",
           "status",
@@ -512,6 +513,7 @@ module.exports = {
           players: {
             select: ["id", "full_name", "nickname"],
           },
+          other_players: true,
         },
         offset,
         limit: pageSize,
@@ -561,7 +563,7 @@ module.exports = {
           "player_logs",
           "game_logs",
         ],
-        orderBy: { schedule: "desc" },
+        orderBy: { id: "desc" },
         populate: {
           dungeon_master: {
             select: ["id", "full_name", "nickname", "dm_name"],
