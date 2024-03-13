@@ -45,7 +45,7 @@ module.exports = {
       },
     ];
 
-    let sortObject = { id: "asc" };
+    let sortObject = { schedule: "asc" };
     if (sort) {
       if (!(sort === "desc" || sort === "asc")) {
         return ctx.badRequest("sort must be asc or desc");
