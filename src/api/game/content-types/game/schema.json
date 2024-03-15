@@ -50,15 +50,11 @@
       "target": "plugin::users-permissions.user"
     },
     "notes": {
-      "type": "text"
+      "type": "richtext"
     },
     "status": {
       "type": "enumeration",
-      "enum": [
-        "scheduled",
-        "done",
-        "cancelled"
-      ]
+      "enum": ["scheduled", "done", "cancelled"]
     },
     "players_only_notes": {
       "type": "text"

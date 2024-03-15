@@ -403,7 +403,7 @@ export interface ApiGameGame extends Schema.CollectionType {
       'oneToMany',
       'plugin::users-permissions.user'
     >;
-    notes: Attribute.Text;
+    notes: Attribute.RichText;
     status: Attribute.Enumeration<['scheduled', 'done', 'cancelled']>;
     players_only_notes: Attribute.Text;
     show_player_notes: Attribute.Boolean & Attribute.DefaultTo<false>;
@@ -425,6 +425,7 @@ export interface ApiLocationLocation extends Schema.CollectionType {
     singularName: 'location';
     pluralName: 'locations';
     displayName: 'Locations';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -434,6 +435,7 @@ export interface ApiLocationLocation extends Schema.CollectionType {
     notes: Attribute.Text;
     latitude: Attribute.Float;
     longitude: Attribute.Float;
+    google_maps_link: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<

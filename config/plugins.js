@@ -1,1 +1,5 @@
-module.exports = () => ({});
+module.exports = () => ({
+  "tiptap-editor": {
+    enabled: true,
+  },
+});
