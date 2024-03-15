@@ -52,7 +52,7 @@ module.exports = async (strapi) => {
           if (!existing) {
             strapi.activeUsers.push({
               user_id: tokenPayload.id,
-              socket_id: socket.id,
+              // socket_id: socket.id,
               createdAt: new Date(),
             });
             console.log("active users", strapi.activeUsers);
@@ -119,4 +119,7 @@ module.exports = async (strapi) => {
       io.to(user.socket_id).emit("update", data);
     });
   };
+
+  //emit to everyone
+  strapi.emitToAll = (event, data) => io.emit(event, data);
 };
