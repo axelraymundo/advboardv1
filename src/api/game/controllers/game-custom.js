@@ -4,6 +4,8 @@
  * A set of functions called "actions" for `game-custom`
  */
 
+const moment = require("moment-timezone");
+
 module.exports = {
   async getBoard(ctx) {
     const { search, sort, from, to, page, pageSize } = ctx.query;
@@ -170,6 +172,31 @@ module.exports = {
       log_date: new Date().toISOString(),
     });
 
+    //create a notification for dungeon master
+    if (game.dungeon_master) {
+      const notification = await strapi.entityService.create(
+        "api::notification.notification",
+        {
+          data: {
+            user: game.dungeon_master.id,
+            title: `A player signed up for your game`,
+            body: `Player ${user.full_name} (${
+              user.nickname
+            }) signed up for the game: ${game.title} scheduled on ${moment(
+              game.schedule
+            )
+              .tz("Asia/Manila")
+              .format("LLLL")}`,
+            data: {
+              action: "signup",
+              game_id: game.id,
+              player_id: user.id,
+            },
+          },
+        }
+      );
+    }
+
     //update game details
     const entry = await strapi.entityService.update("api::game.game", game_id, {
       data: {
@@ -198,6 +225,7 @@ module.exports = {
       populate: {
         players_pending: true,
         players: true,
+        dungeon_master: true,
       },
     });
 
@@ -238,6 +266,31 @@ module.exports = {
       user_id: user.id,
       log_date: new Date().toISOString(),
     });
+
+    //create a notification for dungeon master
+    if (game.dungeon_master) {
+      const notification = await strapi.entityService.create(
+        "api::notification.notification",
+        {
+          data: {
+            user: game.dungeon_master.id,
+            title: `A player left your game`,
+            body: `Player ${user.full_name} (${
+              user.nickname
+            }) has withdrawn from the game: ${game.title} scheduled on ${moment(
+              game.schedule
+            )
+              .tz("Asia/Manila")
+              .format("LLLL")}`,
+            data: {
+              action: "player_left",
+              game_id: game.id,
+              player_id: user.id,
+            },
+          },
+        }
+      );
+    }
 
     //update game details
     const entry = await strapi.entityService.update("api::game.game", game_id, {
@@ -320,6 +373,31 @@ module.exports = {
       log_date: new Date().toISOString(),
     });
 
+    //create a notification for player
+    if (game.dungeon_master) {
+      const notification = await strapi.entityService.create(
+        "api::notification.notification",
+        {
+          data: {
+            user: player.id,
+            title: `Your signup was accepted`,
+            body: `Your signup for the game: ${
+              game.title
+            } scheduled on ${moment(game.schedule)
+              .tz("Asia/Manila")
+              .format("LLLL")} has been accepted by ${
+              game.dungeon_master.dm_name
+            }`,
+            data: {
+              action: "signup_accepted",
+              game_id: game.id,
+              player_id: user.id,
+            },
+          },
+        }
+      );
+    }
+
     //update game details
     const entry = await strapi.entityService.update("api::game.game", game_id, {
       data: {
@@ -386,6 +464,29 @@ module.exports = {
       user_id: player.id,
       log_date: new Date().toISOString(),
     });
+
+    //create a notification for player
+    if (game.dungeon_master) {
+      const notification = await strapi.entityService.create(
+        "api::notification.notification",
+        {
+          data: {
+            user: player.id,
+            title: `You were added to a game`,
+            body: `You were added to the game: ${
+              game.title
+            } scheduled on ${moment(game.schedule)
+              .tz("Asia/Manila")
+              .format("LLLL")} by ${game.dungeon_master.dm_name}`,
+            data: {
+              action: "player_added",
+              game_id: game.id,
+              player_id: user.id,
+            },
+          },
+        }
+      );
+    }
 
     //update game details
     const entry = await strapi.entityService.update("api::game.game", game_id, {
@@ -454,6 +555,29 @@ module.exports = {
       user_id: player.id,
       log_date: new Date().toISOString(),
     });
+
+    //create a notification for player
+    if (game.dungeon_master) {
+      const notification = await strapi.entityService.create(
+        "api::notification.notification",
+        {
+          data: {
+            user: player.id,
+            title: `You were removed from a game`,
+            body: `You were removed from the game: ${
+              game.title
+            } scheduled on ${moment(game.schedule)
+              .tz("Asia/Manila")
+              .format("LLLL")} by ${game.dungeon_master.dm_name}`,
+            data: {
+              action: "player_removed",
+              game_id: game.id,
+              player_id: user.id,
+            },
+          },
+        }
+      );
+    }
 
     //update game details
     const entry = await strapi.entityService.update("api::game.game", game_id, {
