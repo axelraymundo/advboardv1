@@ -95,7 +95,7 @@ module.exports = {
       return e;
     });
 
-    return { results, pagination };
+    return { results, pagination, active: strapi.io.engine.clientsCount };
   },
 
   async getGame(ctx) {
@@ -195,10 +195,6 @@ module.exports = {
           },
         }
       );
-
-      strapi.emitToUser(game.dungeon_master.id, {
-        action: "notification_received",
-      });
     }
 
     //update game details
@@ -294,10 +290,6 @@ module.exports = {
           },
         }
       );
-
-      strapi.emitToUser(game.dungeon_master.id, {
-        action: "notification_received",
-      });
     }
 
     //update game details
@@ -404,10 +396,6 @@ module.exports = {
           },
         }
       );
-
-      strapi.emitToUser(player.id, {
-        action: "notification_received",
-      });
     }
 
     //update game details
@@ -498,10 +486,6 @@ module.exports = {
           },
         }
       );
-
-      strapi.emitToUser(player.id, {
-        action: "notification_received",
-      });
     }
 
     //update game details
@@ -593,10 +577,6 @@ module.exports = {
           },
         }
       );
-
-      strapi.emitToUser(player.id, {
-        action: "notification_received",
-      });
     }
 
     //update game details

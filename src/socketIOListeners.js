@@ -52,7 +52,7 @@ module.exports = async (strapi) => {
           if (!existing) {
             strapi.activeUsers.push({
               user_id: tokenPayload.id,
-              // socket_id: socket.id,
+              socket_id: socket.id,
               createdAt: new Date(),
             });
             console.log("active users", strapi.activeUsers);
@@ -68,7 +68,9 @@ module.exports = async (strapi) => {
               }
             );
 
-            callBack({ active_users: strapi.activeUsers });
+            callBack({
+              active_users: strapi.activeUsers.length,
+            });
 
             // console.log(
             //   "all",
@@ -106,6 +108,7 @@ module.exports = async (strapi) => {
   });
 
   //strapi global functions
+  strapi.io = io;
 
   //check if online and on how many devices
   strapi.checkIfOnline = (user_id) => {
@@ -115,6 +118,7 @@ module.exports = async (strapi) => {
   //emit to user based on user id
   strapi.emitToUser = (user_id, data) => {
     const userDevices = strapi.activeUsers.filter((u) => u.user_id === user_id);
+
     userDevices.map((user) => {
       io.to(user.socket_id).emit("update", data);
     });

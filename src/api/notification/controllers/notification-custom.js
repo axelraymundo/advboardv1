@@ -45,7 +45,7 @@ module.exports = {
 
     let entry = await strapi.entityService.findOne(
       "api::notification.notification",
-      1,
+      notification_id,
       {
         populate: { user: true },
       }
