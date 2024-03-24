@@ -195,6 +195,10 @@ module.exports = {
           },
         }
       );
+
+      strapi.emitToUser(game.dungeon_master.id, {
+        action: "notification_received",
+      });
     }
 
     //update game details
@@ -290,6 +294,10 @@ module.exports = {
           },
         }
       );
+
+      strapi.emitToUser(game.dungeon_master.id, {
+        action: "notification_received",
+      });
     }
 
     //update game details
@@ -396,6 +404,10 @@ module.exports = {
           },
         }
       );
+
+      strapi.emitToUser(player.id, {
+        action: "notification_received",
+      });
     }
 
     //update game details
@@ -486,6 +498,10 @@ module.exports = {
           },
         }
       );
+
+      strapi.emitToUser(player.id, {
+        action: "notification_received",
+      });
     }
 
     //update game details
@@ -577,6 +593,10 @@ module.exports = {
           },
         }
       );
+
+      strapi.emitToUser(player.id, {
+        action: "notification_received",
+      });
     }
 
     //update game details

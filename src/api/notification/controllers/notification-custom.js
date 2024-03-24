@@ -27,6 +27,19 @@ module.exports = {
 
     return entries;
   },
+
+  async getUnreadNotifications(ctx) {
+    const [entries, count] = await strapi.db
+      .query("api::notification.notification")
+      .findWithCount({
+        select: ["id"],
+        where: { user: ctx.state.user.id, is_read: false },
+        orderBy: { id: "DESC" },
+      });
+
+    return { count };
+  },
+
   async readNotification(ctx) {
     const { notification_id } = ctx.params;
 
