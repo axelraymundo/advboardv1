@@ -29,6 +29,7 @@ module.exports = async (strapi) => {
   };
 
   strapi.pushNotification = async (message) => {
+    console.log("pushing?", message);
     const msg = { ...message };
 
     msg.notification = {
@@ -45,13 +46,13 @@ module.exports = async (strapi) => {
         .messaging()
         .sendMulticast(msg)
         .then(async function (response) {
-          // console.log("success?", JSON.stringify(response));
+          console.log("success?", JSON.stringify(response));
 
           let results = response.responses;
           for (let i = 0; i < results.length; i++) {
             const result = results[i];
             if (!result.success) {
-              // console.log("DELETE ", i, tokens[i]);
+              console.log("DELETE ", i, tokens[i]);
 
               const toDelete = await strapi.db
                 .query("api::device-token.device-token")
