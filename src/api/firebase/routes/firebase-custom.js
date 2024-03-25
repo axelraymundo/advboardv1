@@ -16,8 +16,8 @@ module.exports = {
       handler: "firebase.saveFCMToken",
     },
     {
-      method: "DELETE",
-      path: "/firebase/deleteFCMToken/:id",
+      method: "POST",
+      path: "/firebase/deleteFCMToken",
       handler: "firebase.deleteFCMToken",
     },
   ],

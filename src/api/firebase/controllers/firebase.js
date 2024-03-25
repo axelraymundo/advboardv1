@@ -128,55 +128,50 @@ module.exports = {
     const validateToken = await strapi.validateFCMToken(token);
     if (!validateToken) return ctx.badRequest("Invalid FCM Token");
 
-    const user = await strapi.db
-      .query("plugin::users-permissions.user")
-      .findOne({
-        where: { id: ctx.state.user.id },
-        populate: {
-          device_tokens: true,
+    const entries = await strapi.entityService.findPage(
+      "api::device-token.device-token",
+      {
+        filters: {
+          user: ctx.state.user.id,
+          token,
         },
-      });
+        page: 1,
+        pageSize: 100,
+      }
+    );
 
-    //check if token exists on user's devices
-    const found = user.device_tokens.find((t) => t.token === token);
-
-    if (!found) {
-      //save
-      const newToken = await strapi.db
-        .query("api::device-token.device-token")
-        .create({
+    if (entries.results.length <= 0) {
+      const entry = await strapi.entityService.create(
+        "api::device-token.device-token",
+        {
           data: {
+            user: ctx.state.user.id,
             token,
-            user: user.id,
             description: ctx.request.header["user-agent"],
           },
-        });
-      return newToken;
+        }
+      );
+
+      return { success: true, message: "Token saved" };
+      // return entry;
     }
 
-    return { message: "Token is saved under user" };
+    return { success: false, message: "Token exists" };
   },
 
   async deleteFCMToken(ctx) {
-    const { id } = ctx.params;
+    const token = ctx.request.body.token;
 
-    const status = await strapi.db
+    console.log(ctx.request.body);
+
+    const entry = await strapi.db
       .query("api::device-token.device-token")
       .delete({
-        where: {
-          $and: [
-            {
-              id: id,
-            },
-            {
-              user: ctx.state.user.id,
-            },
-          ],
-        },
+        where: { token },
       });
 
-    return status
-      ? { message: "token deleted" }
-      : { message: "invalid request" };
+    return entry
+      ? { success: true, message: "token deleted" }
+      : { success: false, message: "invalid request" };
   },
 };

@@ -362,135 +362,6 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
-export interface ApiGameGame extends Schema.CollectionType {
-  collectionName: 'games';
-  info: {
-    singularName: 'game';
-    pluralName: 'games';
-    displayName: 'Games';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    title: Attribute.String;
-    schedule: Attribute.DateTime;
-    location: Attribute.String;
-    type: Attribute.Enumeration<
-      [
-        'tier_1',
-        'tier_2',
-        'tier_3',
-        'tier_4',
-        'homebrew',
-        'hardcover',
-        'boardgame'
-      ]
-    >;
-    dungeon_master: Attribute.Relation<
-      'api::game.game',
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-    players_pending: Attribute.Relation<
-      'api::game.game',
-      'oneToMany',
-      'plugin::users-permissions.user'
-    >;
-    players: Attribute.Relation<
-      'api::game.game',
-      'oneToMany',
-      'plugin::users-permissions.user'
-    >;
-    notes: Attribute.RichText;
-    status: Attribute.Enumeration<['scheduled', 'done', 'cancelled']>;
-    players_only_notes: Attribute.Text;
-    show_player_notes: Attribute.Boolean & Attribute.DefaultTo<false>;
-    other_players: Attribute.Component<'other.extra-players', true>;
-    player_logs: Attribute.JSON;
-    game_logs: Attribute.JSON;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-  };
-}
-
-export interface ApiLocationLocation extends Schema.CollectionType {
-  collectionName: 'locations';
-  info: {
-    singularName: 'location';
-    pluralName: 'locations';
-    displayName: 'Locations';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    name: Attribute.String;
-    notes: Attribute.Text;
-    latitude: Attribute.Float;
-    longitude: Attribute.Float;
-    google_maps_link: Attribute.String;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::location.location',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::location.location',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiNotificationNotification extends Schema.CollectionType {
-  collectionName: 'notifications';
-  info: {
-    singularName: 'notification';
-    pluralName: 'notifications';
-    displayName: 'Notifications';
-    description: '';
-  };
-  options: {
-    draftAndPublish: false;
-  };
-  attributes: {
-    title: Attribute.String;
-    body: Attribute.Text;
-    data: Attribute.JSON;
-    user: Attribute.Relation<
-      'api::notification.notification',
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-    is_read: Attribute.Boolean & Attribute.DefaultTo<false>;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::notification.notification',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::notification.notification',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -918,6 +789,170 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiDeviceTokenDeviceToken extends Schema.CollectionType {
+  collectionName: 'device_tokens';
+  info: {
+    singularName: 'device-token';
+    pluralName: 'device-tokens';
+    displayName: 'Device Tokens';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    user: Attribute.Relation<
+      'api::device-token.device-token',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    token: Attribute.String;
+    description: Attribute.Text;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::device-token.device-token',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::device-token.device-token',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiGameGame extends Schema.CollectionType {
+  collectionName: 'games';
+  info: {
+    singularName: 'game';
+    pluralName: 'games';
+    displayName: 'Games';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    title: Attribute.String;
+    schedule: Attribute.DateTime;
+    location: Attribute.String;
+    type: Attribute.Enumeration<
+      [
+        'tier_1',
+        'tier_2',
+        'tier_3',
+        'tier_4',
+        'homebrew',
+        'hardcover',
+        'boardgame'
+      ]
+    >;
+    dungeon_master: Attribute.Relation<
+      'api::game.game',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    players_pending: Attribute.Relation<
+      'api::game.game',
+      'oneToMany',
+      'plugin::users-permissions.user'
+    >;
+    players: Attribute.Relation<
+      'api::game.game',
+      'oneToMany',
+      'plugin::users-permissions.user'
+    >;
+    notes: Attribute.RichText;
+    status: Attribute.Enumeration<['scheduled', 'done', 'cancelled']>;
+    players_only_notes: Attribute.Text;
+    show_player_notes: Attribute.Boolean & Attribute.DefaultTo<false>;
+    other_players: Attribute.Component<'other.extra-players', true>;
+    player_logs: Attribute.JSON;
+    game_logs: Attribute.JSON;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiLocationLocation extends Schema.CollectionType {
+  collectionName: 'locations';
+  info: {
+    singularName: 'location';
+    pluralName: 'locations';
+    displayName: 'Locations';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    name: Attribute.String;
+    notes: Attribute.Text;
+    latitude: Attribute.Float;
+    longitude: Attribute.Float;
+    google_maps_link: Attribute.String;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::location.location',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::location.location',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiNotificationNotification extends Schema.CollectionType {
+  collectionName: 'notifications';
+  info: {
+    singularName: 'notification';
+    pluralName: 'notifications';
+    displayName: 'Notifications';
+    description: '';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    title: Attribute.String;
+    body: Attribute.Text;
+    data: Attribute.JSON;
+    user: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    is_read: Attribute.Boolean & Attribute.DefaultTo<false>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::notification.notification',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -928,9 +963,6 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
-      'api::game.game': ApiGameGame;
-      'api::location.location': ApiLocationLocation;
-      'api::notification.notification': ApiNotificationNotification;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
@@ -939,6 +971,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::device-token.device-token': ApiDeviceTokenDeviceToken;
+      'api::game.game': ApiGameGame;
+      'api::location.location': ApiLocationLocation;
+      'api::notification.notification': ApiNotificationNotification;
     }
   }
 }
