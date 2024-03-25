@@ -20,14 +20,14 @@ module.exports = {
       }
     );
 
-    console.log(result);
+    if (entries.results.length > 0) {
+      // process the tokens
+      const message = {
+        data: { title: result.title, body: result.body },
+        tokens: entries.results.map((r) => r.token),
+      };
 
-    // process the tokens
-    const message = {
-      data: { title: result.title, body: result.body },
-      tokens: entries.results.map((r) => r.token),
-    };
-
-    await strapi.pushNotification(message);
+      await strapi.pushNotification(message);
+    }
   },
 };
