@@ -100,6 +100,19 @@ module.exports = {
       return e;
     });
 
+    //set all previous games to done
+    const done = await strapi.db.query("api::game.game").updateMany({
+      where: {
+        schedule: {
+          $lt: new Date().toISOString(),
+        },
+        status: "scheduled",
+      },
+      data: {
+        status: "done",
+      },
+    });
+
     return { results, pagination };
   },
 
