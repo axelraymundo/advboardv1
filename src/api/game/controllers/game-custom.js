@@ -87,6 +87,7 @@ module.exports = {
           fields: ["id", "full_name", "nickname"],
         },
         other_players: true,
+        place: true,
       },
     });
 
