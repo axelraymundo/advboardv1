@@ -1,4 +1,28 @@
 module.exports = {
+  async beforeCreate(event) {
+    const { data, where, select, populate } = event.params;
+
+    const place = await strapi.entityService.findOne(
+      "api::location.location",
+      data.place,
+      {}
+    );
+
+    event.params.data.location = place.name;
+  },
+
+  async beforeUpdate(event) {
+    const { data, where, select, populate } = event.params;
+
+    const place = await strapi.entityService.findOne(
+      "api::location.location",
+      data.place,
+      {}
+    );
+
+    event.params.data.location = place.name;
+  },
+
   afterUpdate(event) {
     const { data, where, select, populate } = event.params;
 

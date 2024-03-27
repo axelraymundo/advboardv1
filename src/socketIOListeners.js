@@ -24,6 +24,11 @@ module.exports = async (strapi) => {
   io.on("connection", async (socket) => {
     console.log(`User socketID: ${socket.id} connected`);
 
+    io.emit("user_connected", {
+      logged: strapi.activeUsers.length,
+      total: io.engine.clientsCount,
+    });
+
     socket.on("login", async function (jwt, callBack) {
       console.log("on user login!", jwt);
 
@@ -70,6 +75,11 @@ module.exports = async (strapi) => {
 
             callBack({
               active_users: strapi.activeUsers.length,
+            });
+
+            io.emit("user_connected", {
+              logged: strapi.activeUsers.length,
+              total: io.engine.clientsCount,
             });
 
             // console.log(

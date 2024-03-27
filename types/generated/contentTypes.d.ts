@@ -872,6 +872,11 @@ export interface ApiGameGame extends Schema.CollectionType {
     other_players: Attribute.Component<'other.extra-players', true>;
     player_logs: Attribute.JSON;
     game_logs: Attribute.JSON;
+    place: Attribute.Relation<
+      'api::game.game',
+      'oneToOne',
+      'api::location.location'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::game.game', 'oneToOne', 'admin::user'> &

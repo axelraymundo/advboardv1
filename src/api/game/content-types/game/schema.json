@@ -54,7 +54,11 @@
     },
     "status": {
       "type": "enumeration",
-      "enum": ["scheduled", "done", "cancelled"]
+      "enum": [
+        "scheduled",
+        "done",
+        "cancelled"
+      ]
     },
     "players_only_notes": {
       "type": "text"
@@ -74,6 +78,11 @@
     },
     "game_logs": {
       "type": "json"
+    },
+    "place": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::location.location"
     }
   }
 }

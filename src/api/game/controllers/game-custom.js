@@ -31,6 +31,11 @@ module.exports = {
             $containsi: search,
           },
         },
+        {
+          location: {
+            $containsi: search,
+          },
+        },
       ];
     }
 
@@ -95,7 +100,7 @@ module.exports = {
       return e;
     });
 
-    return { results, pagination, active: strapi.io.engine.clientsCount };
+    return { results, pagination };
   },
 
   async getGame(ctx) {
@@ -121,6 +126,7 @@ module.exports = {
           fields: ["id", "full_name", "nickname"],
         },
         other_players: true,
+        place: true,
       },
     });
 
@@ -652,6 +658,7 @@ module.exports = {
             select: ["id", "full_name", "nickname"],
           },
           other_players: true,
+          place: true,
         },
         offset,
         limit: pageSize,
@@ -718,6 +725,7 @@ module.exports = {
             select: ["id", "full_name", "nickname"],
           },
           other_players: true,
+          place: true,
         },
         offset,
         limit: pageSize,
@@ -775,6 +783,7 @@ module.exports = {
           select: ["id", "full_name", "nickname"],
         },
         other_players: true,
+        place: true,
       },
     });
 
@@ -793,7 +802,7 @@ module.exports = {
 
     //allowed data
     Object.entries(data).forEach(([key, value]) => {
-      if (!["title", "schedule", "location", "type", "notes"].includes(key))
+      if (!["title", "schedule", "place", "type", "notes"].includes(key))
         delete data[key];
     });
 
@@ -840,7 +849,7 @@ module.exports = {
         ![
           "title",
           "schedule",
-          "location",
+          "place",
           "type",
           "notes",
           "status",
