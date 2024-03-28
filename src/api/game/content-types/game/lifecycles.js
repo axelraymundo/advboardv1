@@ -48,14 +48,15 @@ module.exports = {
         }
       }
     } else {
-      //normal
-      const place = await strapi.entityService.findOne(
-        "api::location.location",
-        data.place,
-        {}
-      );
-
-      event.params.data.location = place.name;
+      if (data.place) {
+        //normal
+        const place = await strapi.entityService.findOne(
+          "api::location.location",
+          data.place,
+          {}
+        );
+        event.params.data.location = place.name;
+      }
     }
   },
 
